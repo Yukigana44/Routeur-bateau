@@ -7,7 +7,7 @@ USE routeur-bateau;
 CREATE TABLE users (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(100) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
+    password VARCHAR(100) NOT NULL,
 ) ENGINE=InnoDB;
 
 CREATE TABLE bateaux (
@@ -21,8 +21,8 @@ CREATE TABLE trajets (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     user_id INT UNSIGNED NOT NULL,
     bateau_id INT UNSIGNED NOT NULL,
-    depart VARCHAR(255) NOT NULL,
-    arrivee VARCHAR(255) NOT NULL,
-    météo VARCHAR(255),
+    depart VARCHAR(100) NOT NULL,
+    arrivee VARCHAR(100) NOT NULL,
+    météo VARCHAR(100),
     date DATETIME NOT NULL,
 ) ENGINE=InnoDB;
