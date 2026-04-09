@@ -1,5 +1,5 @@
 <?php
-$host = 'localhost';
+$host = '127.0.0.1';
 $db   = 'projet_php';
 $user = 'root';
 $pass = '';
@@ -14,6 +14,5 @@ $options = [
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (\PDOException $e) {
-    throw new \PDOException($e->getMessage(), (int)$e->getCode());
+    die("Erreur de connexion à la base : " . $e->getMessage());
 }
-?>
