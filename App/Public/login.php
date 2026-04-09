@@ -1,6 +1,7 @@
 <?php
 session_start();
-require 'controllers/AuthController.php';
+require __DIR__ . '/../controllers/AuthController.php';
+
 
 $error = '';
 

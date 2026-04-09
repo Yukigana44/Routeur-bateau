@@ -1,7 +1,7 @@
 <?php
 session_start();
-require 'config.php';
-require 'controllers/TrajetController.php';
+require __DIR__ . '/../Public/config.php';
+require __DIR__ . '/../controllers/TrajetController.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");

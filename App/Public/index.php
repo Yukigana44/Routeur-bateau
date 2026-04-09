@@ -1,13 +1,10 @@
 <?php
+session_start();
 
-$pdo = new PDO("sqlite:test.db");
-
-$pdo->exec("CREATE TABLE test (id INTEGER PRIMARY KEY, name TEXT)");
-
-$pdo->exec("INSERT INTO test (name) VALUES ('Julie')");
-
-$result = $pdo->query("SELECT * FROM test");
-
-foreach ($result as $row) {
-    echo $row['name'];
+if (isset($_SESSION['user_id'])) {
+    header("Location: dashboard.php");
+    exit;
 }
+
+header("Location: login.php");
+exit;

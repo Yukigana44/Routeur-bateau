@@ -1,5 +1,5 @@
 <?php
-require 'controllers/AuthController.php';
+require __DIR__ . '/../controllers/AuthController.php';
 
 $auth = new AuthController();
 $auth->logout();
