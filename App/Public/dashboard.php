@@ -1,6 +1,6 @@
 <?php
 session_start();
-require __DIR__ . '/../Public/config.php';
+require __DIR__ . '/../config/database.php';
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
