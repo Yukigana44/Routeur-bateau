@@ -1,20 +1,18 @@
--- Schéma de base de données application routage maritime
-
-CREATE DATABASE IF NOT EXISTS routeur-bateau
+CREATE DATABASE IF NOT EXISTS routeur_bateau
   CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE routeur-bateau;
+USE routeur_bateau;
 
 CREATE TABLE users (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(100) NOT NULL UNIQUE,
-    password VARCHAR(100) NOT NULL,
+    password VARCHAR(255) NOT NULL
 ) ENGINE=InnoDB;
 
 CREATE TABLE bateaux (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     type VARCHAR(50),
-    vitesse FLOAT,
+    vitesse FLOAT
 ) ENGINE=InnoDB;
 
 CREATE TABLE trajets (
@@ -23,6 +21,8 @@ CREATE TABLE trajets (
     bateau_id INT UNSIGNED NOT NULL,
     depart VARCHAR(100) NOT NULL,
     arrivee VARCHAR(100) NOT NULL,
-    météo VARCHAR(100),
+    meteo VARCHAR(100),
     date DATETIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (bateau_id) REFERENCES bateaux(id)
 ) ENGINE=InnoDB;
