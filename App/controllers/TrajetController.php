@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../config/database.php';
+require_once ROOT . '/../config/database.php';
 
 class TrajetController {
 
@@ -19,3 +19,5 @@ class TrajetController {
         return $stmt->fetchAll();
     }
 }
+
+USE projet_php;

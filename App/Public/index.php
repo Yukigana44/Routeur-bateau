@@ -1,14 +1,12 @@
 <?php
-require_once __DIR__ . '/../controllers/AuthController.php';
+
 define('ROOT', dirname(__DIR__));
-require ROOT . '/config/database.php';
 
-session_start();
 
-if (isset($_SESSION['user_id'])) {
-    header("Location: dashboard.php");
-    exit;
-}
+require_once ROOT . '/../config/database.php';
 
-header("Location: login.php");
-exit;
+
+require_once ROOT . '/src/Controller/AuthController.php';
+require_once ROOT . '/src/Controller/TrajetController.php';
+use App\Controller\AuthController;
+use App\Controller\TrajetController;

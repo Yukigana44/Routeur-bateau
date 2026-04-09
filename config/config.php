@@ -1,5 +1,5 @@
 <?php
-$host = '127.0.0.1';
+$host = '127.0.0.1'; 
 $db   = 'projet_php';
 $user = 'root';
 $pass = '';
