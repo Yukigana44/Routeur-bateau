@@ -1,20 +1,26 @@
 <?php
 session_start();
+require_once __DIR__ . '/../helpers/csrf.php';
 require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../controllers/TrajetController.php';
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
 }
 
-$trajets = $pdo->prepare(
-    "SELECT t.*, b.name AS bateau_name, m.meteo_condition AS meteo_condition, m.temperature, m.vent, m.humidite
-     FROM trajets t
-     JOIN bateaux b ON t.bateau_id = b.id
-     JOIN meteo m ON t.meteo_id = m.id
-     WHERE t.user_id = ?"
-);
-$trajets->execute([$_SESSION['user_id']]);
-$data = $trajets->fetchAll();
+$controller = new TrajetController();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_trajet'])) {
+    $token = $_POST['csrf_token'] ?? '';
+    if (csrf_validate($token)) {
+        $controller->delete($_POST['delete_trajet'], $_SESSION['user_id']);
+    }
+    header('Location: dashboard.php');
+    exit;
+}
+
+$trajets = $controller->getByUser($_SESSION['user_id']);
+$data = $trajets;
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -36,12 +42,22 @@ $data = $trajets->fetchAll();
             <ul>
             <?php foreach ($data as $t): ?>
                 <li>
-                    <strong><?= htmlspecialchars($t['depart']) ?></strong> → <strong><?= htmlspecialchars($t['arrivee']) ?></strong><br>
-                    Bateau : <?= htmlspecialchars($t['bateau_name']) ?><br>
-                    Météo : <?= htmlspecialchars($t['meteo_condition']) ?>,
-                    <?= htmlspecialchars($t['temperature']) ?>,
-                    <?= htmlspecialchars($t['vent']) ?>,
-                    <?= htmlspecialchars($t['humidite']) ?>
+                    <div class="item-header">
+                        <strong><?= htmlspecialchars($t['depart']) ?></strong> → <strong><?= htmlspecialchars($t['arrivee']) ?></strong>
+                    </div>
+                    <div>Bateau : <?= htmlspecialchars($t['bateau_name']) ?></div>
+                    <div>Météo : <?= htmlspecialchars($t['meteo_condition']) ?>,
+                        <?= htmlspecialchars($t['temperature']) ?>,
+                        <?= htmlspecialchars($t['vent']) ?>,
+                        <?= htmlspecialchars($t['humidite']) ?></div>
+                    <div class="item-actions">
+                        <a class="button button-secondary" href="modifier-trajet.php?id=<?= htmlspecialchars($t['id']) ?>">Modifier</a>
+                        <form method="POST" action="dashboard.php" class="inline-form" onsubmit="return confirm('Supprimer ce trajet ?');">
+                            <input type="hidden" name="delete_trajet" value="<?= htmlspecialchars($t['id']) ?>">
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
+                            <button type="submit" class="button button-danger">Supprimer</button>
+                        </form>
+                    </div>
                 </li>
             <?php endforeach; ?>
             </ul>

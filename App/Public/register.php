@@ -4,23 +4,27 @@ if (isset($_SESSION['user_id'])) {
     header('Location: dashboard.php');
     exit;
 }
+require_once __DIR__ . '/../helpers/csrf.php';
 require_once __DIR__ . '/../controllers/AuthController.php';
 
 $message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+    $token = $_POST['csrf_token'] ?? '';
 
-    if (!empty($email) && !empty($password)) {
+    if (!csrf_validate($token)) {
+        $message = 'Token CSRF invalide.';
+    } elseif ($email === '' || $password === '') {
+        $message = "Remplis tous les champs";
+    } else {
         $auth = new AuthController();
         $message = $auth->register($email, $password);
         if ($message === 'Compte créé') {
             header('Location: login.php');
             exit;
         }
-    } else {
-        $message = "Remplis tous les champs";
     }
 }
 ?>
@@ -41,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label>Mot de passe
                 <input type="password" name="password" placeholder="Mot de passe" required>
             </label>
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
             <button type="submit">Créer</button>
         </form>
         <?php if ($message): ?>

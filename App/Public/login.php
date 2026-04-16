@@ -4,13 +4,24 @@ if (isset($_SESSION['user_id'])) {
     header('Location: dashboard.php');
     exit;
 }
+require_once __DIR__ . '/../helpers/csrf.php';
 require_once __DIR__ . '/../controllers/AuthController.php';
 
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $auth = new AuthController();
-    $error = $auth->login($_POST['email'], $_POST['password']);
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+    $token = $_POST['csrf_token'] ?? '';
+
+    if (!csrf_validate($token)) {
+        $error = 'Token CSRF invalide.';
+    } elseif ($email === '' || $password === '') {
+        $error = 'Remplis tous les champs';
+    } else {
+        $auth = new AuthController();
+        $error = $auth->login($email, $password);
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -30,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label>Mot de passe
                 <input type="password" name="password" placeholder="Mot de passe" required>
             </label>
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
             <button type="submit">Se connecter</button>
         </form>
         <?php if ($error): ?>

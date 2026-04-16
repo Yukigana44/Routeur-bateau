@@ -28,4 +28,36 @@ class TrajetController
         $stmt->execute([$user_id]);
         return $stmt->fetchAll();
     }
+
+    public function get($id, $user_id)
+    {
+        global $pdo;
+
+        $stmt = $pdo->prepare(
+            "SELECT * FROM trajets WHERE id = ? AND user_id = ?"
+        );
+        $stmt->execute([$id, $user_id]);
+        return $stmt->fetch();
+    }
+
+    public function update($id, $user_id, $bateau_id, $meteo_id, $depart, $arrivee, $date)
+    {
+        global $pdo;
+
+        $stmt = $pdo->prepare(
+            "UPDATE trajets SET bateau_id = ?, meteo_id = ?, depart = ?, arrivee = ?, date = ?
+             WHERE id = ? AND user_id = ?"
+        );
+        return $stmt->execute([$bateau_id, $meteo_id, $depart, $arrivee, $date, $id, $user_id]);
+    }
+
+    public function delete($id, $user_id)
+    {
+        global $pdo;
+
+        $stmt = $pdo->prepare(
+            "DELETE FROM trajets WHERE id = ? AND user_id = ?"
+        );
+        return $stmt->execute([$id, $user_id]);
+    }
 }

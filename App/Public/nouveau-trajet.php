@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once __DIR__ . '/../helpers/csrf.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../controllers/TrajetController.php';
 
@@ -30,17 +31,22 @@ if (empty($meteos)) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($bateaux) && !empty($meteos)) {
-    $trajet = new TrajetController();
-    $trajet->create(
-        $_SESSION['user_id'],
-        $_POST['bateau_id'],
-        $_POST['meteo_id'],
-        $_POST['depart'],
-        $_POST['arrivee'],
-        $_POST['date']
-    );
+    $token = $_POST['csrf_token'] ?? '';
+    if (!csrf_validate($token)) {
+        $message = 'Token CSRF invalide.';
+    } else {
+        $trajet = new TrajetController();
+        $trajet->create(
+            $_SESSION['user_id'],
+            $_POST['bateau_id'],
+            $_POST['meteo_id'],
+            $_POST['depart'],
+            $_POST['arrivee'],
+            $_POST['date']
+        );
 
-    $message = "Trajet ajouté !";
+        $message = "Trajet ajouté !";
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -84,6 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($bateaux) && !empty($meteos)
                 <label>Date
                     <input type="datetime-local" name="date" required>
                 </label>
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token()) ?>">
                 <button type="submit">Ajouter</button>
             </form>
         <?php endif; ?>
