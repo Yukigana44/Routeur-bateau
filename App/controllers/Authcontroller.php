@@ -1,5 +1,5 @@
 <?php
-require_once ROOT . '/../config/database.php';
+require_once __DIR__ . '/../../config/database.php';
 
 class AuthController {
 
@@ -13,7 +13,8 @@ class AuthController {
         if ($user && password_verify($password, $user['password'])) {
             session_start();
             $_SESSION['user_id'] = $user['id'];
-            header("Location: ../dashboard.php");
+            header("Location: dashboard.php");
+            exit;
         } else {
             return "Erreur de connexion";
         }
@@ -33,6 +34,7 @@ class AuthController {
     public function logout() {
         session_start();
         session_destroy();
-        header("Location: ../login.php");
+        header("Location: login.php");
+        exit;
     }
 }
