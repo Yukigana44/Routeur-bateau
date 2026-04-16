@@ -8,7 +8,7 @@ Créer un parcours de navigation avec :
 - un système d'authentification simple (connexion / inscription)
 - une page pour ajouter un trajet
 - un choix de bateau et un choix de modèle météo
-- une base de données MySQL/SQLite pour stocker les utilisateurs, bateaux, météo et trajets
+- une base de données pour stocker les utilisateurs, bateaux, météo et trajets
 
 ## Ce que j'ai mis en place
 
