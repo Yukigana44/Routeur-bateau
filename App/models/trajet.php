@@ -1,7 +1,10 @@
 <?php
+
+namespace App\Models;
+
 require_once __DIR__ . '/../../config/database.php';
 
-class Trajets
+class Trajet
 {
     private $pdo;
 

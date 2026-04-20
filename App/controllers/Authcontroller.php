@@ -1,7 +1,20 @@
 <?php
+
+namespace App\Controllers;
+
 require_once __DIR__ . '/../../config/database.php';
 
+use App\Repository\UserRepository;
+
 class AuthController {
+
+    private UserRepository $userRepository;
+
+    public function __construct()
+    {
+        global $pdo;
+        $this->userRepository = new UserRepository($pdo);
+    }
 
     private function ensureSession()
     {
@@ -24,21 +37,18 @@ class AuthController {
     }
 
     public function login($email, $password) {
-        global $pdo;
-
         if (!$this->validateEmail($email) || $password === '') {
             return "Erreur de connexion";
         }
 
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
-        $stmt->execute([$email]);
-        $user = $stmt->fetch();
+        // fetch() : une seule ligne
+        $user = $this->userRepository->findByEmail($email);
 
         if ($user && password_verify($password, $user['password'])) {
             $this->ensureSession();
             session_regenerate_id(true);
             $_SESSION['user_id'] = $user['id'];
-            header("Location: dashboard.php");
+            header("Location: /dashboard");
             exit;
         }
 
@@ -46,8 +56,6 @@ class AuthController {
     }
 
     public function register($email, $password) {
-        global $pdo;
-
         if (!$this->validateEmail($email)) {
             return "Adresse email invalide";
         }
@@ -56,16 +64,15 @@ class AuthController {
             return "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule et un chiffre";
         }
 
-        $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
-        $stmt->execute([$email]);
-        if ($stmt->fetch()) {
+        // fetch() : vérifier si l'email existe
+        $existingUser = $this->userRepository->findByEmail($email);
+        if ($existingUser) {
             return "Cette adresse email est déjà utilisée";
         }
 
+        // execute() pour l'INSERT
         $hash = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $pdo->prepare("INSERT INTO users (email, password) VALUES (?, ?)");
-
-        if ($stmt->execute([$email, $hash])) {
+        if ($this->userRepository->create($email, $hash)) {
             return "Compte créé";
         }
 
@@ -75,7 +82,7 @@ class AuthController {
     public function logout() {
         $this->ensureSession();
         session_destroy();
-        header("Location: login.php");
+        header("Location: /login");
         exit;
     }
 }

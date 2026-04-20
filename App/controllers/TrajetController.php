@@ -1,63 +1,82 @@
 <?php
+
+namespace App\Controllers;
+
 require_once __DIR__ . '/../../config/database.php';
+
+use App\Repository\TrajetRepository;
 
 class TrajetController
 {
+    private TrajetRepository $trajetRepository;
+
+    public function __construct()
+    {
+        global $pdo;
+        $this->trajetRepository = new TrajetRepository($pdo);
+    }
+
+    /**
+     * Crée un nouveau trajet avec execute()
+     */
     public function create($user_id, $bateau_id, $meteo_id, $depart, $arrivee, $date)
     {
-        global $pdo;
-
-        $stmt = $pdo->prepare(
-            "INSERT INTO trajets (user_id, bateau_id, meteo_id, depart, arrivee, date)
-             VALUES (?, ?, ?, ?, ?, ?)"
-        );
-        $stmt->execute([$user_id, $bateau_id, $meteo_id, $depart, $arrivee, $date]);
+        return $this->trajetRepository->create($user_id, $bateau_id, $meteo_id, $depart, $arrivee, $date);
     }
 
+    /**
+     * Récupère tous les trajets d'un utilisateur avec fetchAll()
+     */
     public function getByUser($user_id)
     {
-        global $pdo;
-
-        $stmt = $pdo->prepare(
-            "SELECT t.*, b.name AS bateau_name, m.meteo_condition AS meteo_condition, m.temperature, m.vent, m.humidite
-             FROM trajets t
-             JOIN bateaux b ON t.bateau_id = b.id
-             JOIN meteo m ON t.meteo_id = m.id
-             WHERE t.user_id = ?"
-        );
-        $stmt->execute([$user_id]);
-        return $stmt->fetchAll();
+        return $this->trajetRepository->findByUser($user_id);
     }
 
+    /**
+     * Recupère un seul trajet avec fetch()
+     */
     public function get($id, $user_id)
     {
-        global $pdo;
-
-        $stmt = $pdo->prepare(
-            "SELECT * FROM trajets WHERE id = ? AND user_id = ?"
-        );
-        $stmt->execute([$id, $user_id]);
-        return $stmt->fetch();
+        return $this->trajetRepository->findById($id, $user_id);
     }
 
+    /**
+     * Met à jour un trajet existant avec execute()
+     */
     public function update($id, $user_id, $bateau_id, $meteo_id, $depart, $arrivee, $date)
     {
-        global $pdo;
-
-        $stmt = $pdo->prepare(
-            "UPDATE trajets SET bateau_id = ?, meteo_id = ?, depart = ?, arrivee = ?, date = ?
-             WHERE id = ? AND user_id = ?"
-        );
-        return $stmt->execute([$bateau_id, $meteo_id, $depart, $arrivee, $date, $id, $user_id]);
+        return $this->trajetRepository->update($id, $user_id, $bateau_id, $meteo_id, $depart, $arrivee, $date);
     }
 
+    /**
+     * Supprime un trajet avec execute()
+     */
     public function delete($id, $user_id)
     {
-        global $pdo;
+        return $this->trajetRepository->delete($id, $user_id);
+    }
 
-        $stmt = $pdo->prepare(
-            "DELETE FROM trajets WHERE id = ? AND user_id = ?"
-        );
-        return $stmt->execute([$id, $user_id]);
+    /**
+     * Récupère tous les bateaux avec query()
+     */
+    public function getBateaux()
+    {
+        return $this->trajetRepository->findAllBoats();
+    }
+
+    /**
+     * Récupère toutes les conditions météo avec query()
+     */
+    public function getWeather()
+    {
+        return $this->trajetRepository->findAllWeather();
+    }
+
+    /**
+     * Récupère le nombre total de trajets avec fetch()
+     */
+    public function countByUser($user_id): int
+    {
+        return $this->trajetRepository->countByUser($user_id);
     }
 }

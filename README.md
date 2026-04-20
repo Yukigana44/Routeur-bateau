@@ -1,124 +1,241 @@
-# Routeur-bateau
+# 🚤 Routeur Bateau
 
-## Présentation du projet
+## 📌 Description
 
-Routeur-bateau est une application PHP simple permettant de gérer des trajets en mer. L'objectif est de pouvoir enregistrer un trajet avec un bateau, sélectionner un modèle météo et stocker ces informations dans une base de données.
+Ce projet est une application web développée en PHP permettant de gérer des trajets de bateaux.
 
-## Structure de l'application
+---
 
-- `App/Public/`: pages accessibles par le navigateur
-  - `nouveau-trajet.php` : formulaire pour ajouter un trajet
-  - `dashboard.php` : affichage des trajets enregistrés
-  - `login.php`, `register.php`, `logout.php` : gestion de l'authentification
-  - `style.css` : styles du site
-- `App/controllers/`: logique de traitement
-  - `TrajetController.php` :  création et lecture des trajets
-- `App/models/`: accès aux données
-  - `trajet.php` et `User.php` : modèles pour la base de données
-- `config/`: configuration et schéma SQL
-  - `config.php` : connexion PDO à la base
-  - `database.sql` : structure et données de base
-- `schema.sql`: script de création des tables et jeu de données initial
+## 🧠 Architecture
 
-## Installation
+Le projet suit une architecture **MVC (Modèle - Vue - Contrôleur)** :
 
-1. Cloner le dépôt :
-   ```bash
-   git clone <URL_DU_DEPOT>
-   cd Routeur-bateau
-   ```
-2. Configurer la connexion à la base dans `config/config.php` :
-   - hôte
-   - nom de la base
-   - utilisateur
-   - mot de passe
-3. Créer la base de données et les tables avec le script SQL :
-   ```bash
-   mysql -u root -p < schema.sql
-   ```
-   ou si la base existe déjà :
-   ```bash
-   mysql -u root -p projet_php < config/database.sql
-   ```
-4. Lancer le serveur PHP intégré :
-   ```bash
-   php -S localhost:8000 -t App/Public
-   ```
-5. Ouvrir le navigateur :
-   - `http://localhost:8000`
+* **Models** : gestion des données (base de données)
+* **Controllers** : logique métier (qui vont faire l'interface entre les infos et les données)
+* **Public** : interface utilisateur (pages accessibles)
 
-## Commandes importantes
+---
 
-- Vérifier la syntaxe PHP :
-  ```bash
-  php -l App/Public/nouveau-trajet.php
-  ```
-- Lancer le serveur local :
-  ```bash
-  php -S localhost:8000 -t App/Public
-  ```
-- Réinitialiser la base avec le fichier SQL :
-  ```bash
-  mysql -u root -p < schema.sql
-  ```
+## ⚙️ Fonctionnalités
 
-## Gestion des tables SQL dans le terminal
+* Inscription utilisateur
+* Connexion / Déconnexion
+* Création de trajets
+* Modification de trajets
+* Affichage des trajets dans un tableau de bord
 
-1. Se connecter à MySQL :
-   ```bash
-   mysql -u root -p
-   ```
-2. Créer la base si nécessaire :
-   ```sql
-   CREATE DATABASE projet_php;
-   USE projet_php;
-   SOURCE schema.sql;
-   ```
-3. Voir les tables :
-   ```sql
-   SHOW TABLES;
-   ```
-4. Voir la structure d'une table :
-   ```sql
-   DESCRIBE meteo;
-   ```
-5. Modifier une table existante :
-   ```sql
-   ALTER TABLE meteo ADD COLUMN created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
-   ```
-6. Mettre à jour une valeur dans une table :
-   ```sql
-   UPDATE meteo SET meteo_condition = 'AROME' WHERE id = 1;
-   ```
+---
 
-## Ce que j'ai mis en place
+## 📁 Structure du projet
 
-- `App/Public/nouveau-trajet.php` : formulaire de saisie du trajet
-- `App/controllers/TrajetController.php` et `App/models/trajet.php` : gestion de l'enregistrement en base
-- `config/database.sql` et `schema.sql` : création des tables et données initiales
-- `App/Public/dashboard.php` : affichage des trajets enregistrés
-- `App/Public/style.css` : mise en page sobre en tons bleus
+* `App/Public/` : pages accessibles par le navigateur
 
-## Données météo
+  * `nouveau-trajet.php` : formulaire d’ajout de trajet
+  * `dashboard.php` : affichage des trajets
+  * `login.php`, `register.php`, `logout.php` : authentification
+  * `style.css` : design du site
 
-La table `meteo` contient aujourd'hui des modèles nominaux :
-- AROME
-- ARPEGE
-- ICON
-- GFS
+* `App/controllers/` : logique métier
 
-Chaque entrée stocke aussi une température, une vitesse de vent et une humidité.
+  * `TrajetController.php` : gestion des trajets
 
-## Difficultés rencontrées
+* `App/models/` : accès aux données
 
-- organisation des dossiers et fichiers du projet
-- connexion entre les différents fichiers
-- suppression de la simulation et de la carte Leaflet pour garder une page de trajet plus claire
-- gestion de la base de données et des valeurs initiales dans les différents fichiers SQL avec le terminal
+  * `trajet.php`, `User.php` : interaction avec la base de données
 
-## Les + du projet
+* `config/` : configuration
 
-- formulaires fonctionnels
-- schéma SQL créé et utilisé
-- meilleure compréhension du SQL et du terminal
+  * `config.php` : paramètres de connexion
+  * `database.sql` : structure de base
 
+* `schema.sql` : script de création des tables et données initiales
+
+---
+
+## 🗄️ Base de données
+
+Le projet utilise **MySQL**
+
+---
+
+## 🚀 Installation
+
+### 1. Cloner le projet
+
+```bash
+gh repo clone Yukigana44/Routeur-bateau
+cd Routeur-bateau
+```
+
+### 2. Configurer la base de données
+
+Modifier le fichier :
+
+```
+config/config.php
+```
+
+avec :
+
+* hôte
+* nom de la base
+* utilisateur
+* mot de passe
+
+### 3. Créer la base et les tables
+
+```bash
+mysql -u root -p < schema.sql
+```
+
+### 4. Lancer le serveur PHP
+
+```bash
+php -S localhost:8000 -t App/Public
+```
+
+---
+
+## 🌐 Accès
+
+Ouvrir dans le navigateur :
+
+```
+http://localhost:8000
+```
+
+---
+
+## 🛠️ Commandes SQL utiles
+
+### Créer une table
+
+```sql
+CREATE TABLE trajet (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(255),
+    depart VARCHAR(255),
+    arrivee VARCHAR(255)
+);
+```
+
+### Ajouter une donnée
+
+```sql
+INSERT INTO trajet (nom, depart, arrivee)
+VALUES ('Trajet 1', 'Paris', 'Lyon');
+```
+
+### Modifier une table
+
+```sql
+ALTER TABLE trajet ADD COLUMN date DATETIME;
+```
+
+### Supprimer une table
+
+```sql
+DROP TABLE trajet;
+```
+
+---
+
+## 🔐 Sécurité
+
+* Protection CSRF sur les formulaires
+* Organisation MVC
+* Utilisation de PDO pour sécuriser les requêtes SQL
+
+Améliorations possibles :
+
+* Hash sécurisé des mot de passe (`password_hash`)
+* Validation renforcée des formulaires
+* Sécurisation des sessions
+
+---
+
+## 🌦️ Données météo
+
+Une table `meteo` est utilisée avec plusieurs modèles :
+
+* AROME
+* ARPEGE
+* ICON
+* GFS
+
+Chaque entrée contient :
+
+* température
+* vitesse du vent
+* humidité
+
+---
+
+## ⚙️ Commandes utiles
+
+### Lancer le serveur
+
+```bash
+php -S localhost:8000 -t App/Public
+```
+
+### Vérifier un fichier PHP
+
+```bash
+php -l App/Public/nouveau-trajet.php
+```
+
+### Réinitialiser la base
+
+```bash
+mysql -u root -p < schema.sql
+```
+
+---
+
+## 🧪 Gestion des tables (MySQL)
+
+```sql
+SHOW TABLES;
+DESCRIBE meteo;
+```
+
+Ajouter une colonne :
+
+```sql
+ALTER TABLE meteo ADD COLUMN created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
+```
+
+Mettre à jour une donnée :
+
+```sql
+UPDATE meteo SET meteo_condition = 'AROME' WHERE id = 1;
+```
+
+---
+
+## 💡 Ce que j’ai mis en place
+
+* Formulaire d’ajout de trajet fonctionnel
+* Enregistrement des données en base
+* Affichage des trajets
+* Structure MVC
+* Base de données avec script SQL
+* Interface simple et claire
+
+---
+
+## ⚠️ Difficultés rencontrées
+
+* Organisation des fichiers (architecture MVC)
+* Liaison entre les différentes couches (model / controller / view)
+* Gestion de la base de données via le terminal
+* Simplification du projet (suppression de la carte Leaflet)
+
+---
+
+## ➕ Points forts du projet
+
+* Formulaires fonctionnels
+* Utilisation concrète de SQL
+* Bonne compréhension du lien entre PHP et base de données
